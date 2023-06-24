@@ -74,21 +74,22 @@
             {% form 'new_comment', article %}
                   {% if form.errors %}
                         <div class="p-5 border">
-                              <div class="flex flex-col items-center w-full my-3">
+                              <div class="flex flex-row items-center w-full my-3">
                                     <div class="text-red-500">
                                           {% render 'icon-failed' %}
                                     </div>
                                     <div class="ml-3 text-sm font-medium">
                                           Opps your comments can't be posted
                                     </div>
-                                    <ul class="px-4 mb-3 list-decimal ml-7">
-                                          {% for error in form.errors %}
-                                                <li>
-                                                      <span>{{ form.errors.messages[error] }}</span>
-                                                </li>
-                                          {% endfor %}
-                                    </ul>
                               </div>
+                              <ul class="px-4 mb-3 list-decimal ml-7">
+                                    {% for error in form.errors %}
+                                          <li>
+                                                <span>{{ form.errors.messages[error] }}</span>
+                                          </li>
+                                    {% endfor %}
+                              </ul>
+
                         </div>
                   {% elsif form.posted_successfully? %}
                         <div class="flex flex-row items-center w-full p-5 my-3">
