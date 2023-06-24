@@ -51,13 +51,55 @@
 {% if blog.comments_enabled? %}
       <div id="comments" class="my-8">
             {% if article.comments_count > 0 %}
-                  {% else %}
-                        <p>There are not comments</p>
+                  <div class="items-center justify-center flex-1 max-w-4xl px-4 mx-auto">
+                        <h1 class="mb-4 text-lg font-medium">See what people are saying</h1>
+                        {% paginate article.comments by 5 %}
+                              {% for com in article.comments %}
+                                    <div class="flex-1 px-4 my-4 leading-relaxed border sm:px-6 sm:py-4">
+                                          <span class="comment-author">{{ com.author }}</span>
+                                          <span class="text-xs text-gray-400">{{ com.created_at | date: format: "default" }}</span>
+                                          <p class="text-sm">{{ com.content }}</p>
+                                    </div>
+                              {% endfor %}
+                              {% if paginate.pages > 1 %}
+                                    {{ paginate | default_pagination }}
+                              {% endif %}
+                        {% endpaginate %}
+                  </div>
+            {% else %}
+                  <p>There are not comments</p>
             {% endif %}
       </div>
       <div id="comment_form" class="mb-8">
             {% form 'new_comment', article %}
-                  {{ form.errors | default_errors }}
+                  {% if form.errors %}
+                        <div class="p-5 border">
+                              <div class="flex flex-row items-center w-full my-3">
+                                    <div class="text-red-500">
+                                          {% render 'icon-failde' %}
+                                    </div>
+                                    <div class="ml-3 text-sm font-medium">
+                                          Opps your comments can't be posted
+                                    </div>
+                                    <ul class="px-4 mb-3 list-decimal ml-7">
+                                          {% for error in form.errors %}
+                                                <li>
+                                                      <span>{{ form.errors.messages[error] }}</span>
+                                                </li>
+                                          {% endfor %}
+                                    </ul>
+                              </div>
+                        </div>
+                  {% elsif form.posted_successfully? %}
+                        <div class="flex flex-row items-center w-full p-5 my-3">
+                              <div class="text-green-500">
+                                    {% render 'icon-success' %}
+                              </div>
+                              <div class="ml-3 text-sm font-medium">
+                                    Comment was posted successfully
+                              </div>
+                        </div>
+                  {% endif %}
                   <div class="items-center justify-center flex-1 max-w-4xl px-4 mx-auto">
                         <div class="px-1 mb-3 md:flex">
                               <div class="px-3 md:w-1/2">
@@ -68,7 +110,8 @@
                                           type="text"
                                           name="comment[author]"
                                           value="{{ form.author }}"
-                                          placeholder="Jame Dom" />
+                                          placeholder="Jame Dom"
+                                          required />
                               </div>
                               <div class="px-3 md:w-1/2">
                                     <label for="comment_email" class="mb-2 text-xs font-medium text-gray-700 uppercase">Email</label>
@@ -78,13 +121,15 @@
                                           type="email"
                                           name="comment[email]"
                                           value="{{ form.email }}"
-                                          placeholder="jamedom@email.com" />
+                                          placeholder="jamedom@email.com"
+                                          required />
                               </div>
                         </div>
                         <div class="px-1 mb-3 md:flex">
                               <div class="px-3 md:w-full">
                                     <label for="comment_content" class="mb-2 text-xs font-medium text-gray-700 uppercase">Content</label>
                                     <textarea
+                                          required
                                           name="comment[body]"
                                           id="comment_content"
                                           class="w-full h-20 px-3 py-2 text-gray-700 border resize-none focus:outline-none">{{ form.body }}</textarea>
