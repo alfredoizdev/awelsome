@@ -1,0 +1,149 @@
+<article class="py-8">
+      {% for block in section.blocks %}
+            {% case block.type %}
+                  {% when "article_title" %}
+                  <div class="flex items-center justify-center">
+                        <div class="text-center max-w-7xl">
+                              <a href="{{ blog.url }}" class="text-base text-gray-500 uppercase hover:text-gray-900">
+                                    {{ blog.title }}
+                              </a>
+                              <h1 class="text-4xl font-medium md:text-6xl">{{ article.title }}</h1>
+                        </div>
+                  </div>
+                  {% when "article_author" %}
+                  <div class="flex items-center justify-center">
+                        <div class="text-center max-w-7xl">
+                              {% if section.settings.anable_author %}
+                                    <small>{{ article.author }}</small>
+                              {% endif %}
+                        </div>
+                  </div>
+                  {% when "article_published_date" %}
+                  <div class="flex items-center justify-center">
+                        <div class="text-center max-w-7xl">
+                              {% if section.settings.anable_published_date %}
+                                    <time datetime="{{article.created_at | date: '%Y-%m-%d'}}">{{ article.created_at | date: format: 'on_date' }}</time>
+                              {% endif %}
+                        </div>
+                  </div>
+                  {% when "featured_image" %}
+                  <div class="mx-2 overflow-hidden bg-blue-100 rounded-lg max-w-7xl md:mx-auto my-7">
+                        {% if article.image != blank %}
+                              <img
+                                    class="object-cover object-center w-full h-80 md:h-96"
+                                    src="{{article.image | image_url: width: 960 }}"
+                                    loading="lazy"
+                                    alt="{{article.image.alt}}" />
+                        {% else %}
+                              {% assign placeholder_img = 'lifestyle-2' %}
+                              {{ placeholder_img | placeholder_svg_tag: 'w-full h-80 md:h-96 object-cover object-center p-5' }}
+                        {% endif %}
+                  </div>
+                  {% when "article_content" %}
+                  <div class="flex items-center justify-center">
+                        <div class="max-w-7xl">
+                              {{ article.content }}
+                        </div>
+                  </div>
+            {% endcase %}
+      {% endfor %}
+</article>
+{% if blog.comments_enabled? %}
+      <div id="comments" class="my-8">
+            {% if article.comments_count > 0 %}
+                  {% else %}
+                        <p>There are not comments</p>
+            {% endif %}
+      </div>
+      <div id="comment_form" class="mb-8">
+            {% form 'new_comment', article %}
+                  {{ form.errors | default_errors }}
+                  <div class="items-center justify-center flex-1 max-w-4xl px-4 mx-auto">
+                        <div class="px-1 mb-3 md:flex">
+                              <div class="px-3 md:w-1/2">
+                                    <label for="comment_author" class="mb-2 text-xs font-medium text-gray-700 uppercase">Name</label>
+                                    <input
+                                          class="w-full px-4 py-4 mb-3 text-gray-700 border focus:outline-none"
+                                          id="comment_author"
+                                          type="text"
+                                          name="comment[author]"
+                                          value="{{ form.author }}"
+                                          placeholder="Jame Dom" />
+                              </div>
+                              <div class="px-3 md:w-1/2">
+                                    <label for="comment_email" class="mb-2 text-xs font-medium text-gray-700 uppercase">Email</label>
+                                    <input
+                                          class="w-full px-4 py-4 mb-3 text-gray-700 border focus:outline-none"
+                                          id="comment_email"
+                                          type="email"
+                                          name="comment[email]"
+                                          value="{{ form.email }}"
+                                          placeholder="jamedom@email.com" />
+                              </div>
+                        </div>
+                        <div class="px-1 mb-3 md:flex">
+                              <div class="px-3 md:w-full">
+                                    <label for="comment_content" class="mb-2 text-xs font-medium text-gray-700 uppercase">Content</label>
+                                    <textarea
+                                          name="comment[body]"
+                                          id="comment_content"
+                                          class="w-full h-20 px-3 py-2 text-gray-700 border resize-none focus:outline-none">{{ form.body }}</textarea>
+                              </div>
+                        </div>
+                        <div class="px-1 mb-3 md:flex">
+                              <div class="px-3 md:w-full">
+                                    <input
+                                          type="submit"
+                                          class="w-full px-4 py-2 text-base font-medium text-white bg-gray-900 border cursor-pointer hover:bg-gray-700"
+                                          value="Post Comment">
+                              </div>
+                        </div>
+                  </div>
+            {% endform %}
+      </div>
+{% endif %}
+{% schema %}
+      {
+            "name": "Template Article",
+            "settings": [
+                  {
+                        "type": "checkbox",
+                        "id": "anable_author",
+                        "default": true,
+                        "label": "Display Author Name"
+
+                  }, {
+                        "type": "checkbox",
+                        "id": "anable_published_date",
+                        "default": true,
+                        "label": "Anable Published Date"
+                  }
+            ],
+            "blocks": [
+                  {
+                        "type": "article_title",
+                        "name": "Title",
+                        "limit": 1
+                  },
+                  {
+                        "type": "article_author",
+                        "name": "Author",
+                        "limit": 1
+                  },
+                  {
+                        "type": "article_published_date",
+                        "name": "Published Date",
+                        "limit": 1
+                  },
+                  {
+                        "type": "featured_image",
+                        "name": "Thumbnail",
+                        "limit": 1
+                  }, {
+                        "type": "article_content",
+                        "name": "Content",
+                        "limit": 1
+                  }
+            ]
+      }
+{% endschema %}
