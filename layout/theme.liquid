@@ -15,6 +15,9 @@
   </head>
   <body>
    {% section 'header' %}
+   {% if order.confirmation_number %}
+    <h2>ORDER: {{ order.confirmation_number }}</h2>
+   {% endif %}
     <main role="main">
       {{ content_for_layout }}
     </main>
