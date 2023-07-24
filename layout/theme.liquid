@@ -15,11 +15,17 @@
   </head>
   <body>
    {% section 'header' %}
-   {% if order %}
-    <h2>ORDER: {{ order.confirmation_number }}</h2>
-   {% else %}
-   <h2>Not order</h2>
-   {% endif %}
+      {% if request.path == '/checkout/thank_you' %}
+    {% assign order = checkout %}
+  {% else %}
+    {% assign order = false %}
+  {% endif %}
+
+  {% if order and order.status == 'completed' %}
+    <h2>Thanks for the order</h2>
+  {% else %}
+    <h2>Not order</h2>
+  {% endif %}
     <main role="main">
       {{ content_for_layout }}
     </main>
