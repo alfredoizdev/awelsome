@@ -12,7 +12,11 @@
     {{ 'application.css' | asset_url | stylesheet_tag }}
     {{ 'application.js' | asset_url | script_tag }}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-     <script>console.log("{{request.path}}")</script>
+     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewPath = urlParams.get('preview');
+        console.log('Preview Path:', previewPath);
+     </script>
   </head>
   <body>
   {% section 'header' %}
