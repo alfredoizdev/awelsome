@@ -15,7 +15,7 @@
   </head>
   <body>
    {% section 'header' %}
-   {% if order.confirmation_number %}
+   {% if order %}
     <h2>ORDER: {{ order.confirmation_number }}</h2>
    {% else %}
    <h2>Not order</h2>
